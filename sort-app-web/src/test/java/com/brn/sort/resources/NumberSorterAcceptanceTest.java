@@ -3,29 +3,50 @@ package com.brn.sort.resources;
 import com.brn.sort.App;
 import com.brn.sort.SortAppConfiguration;
 import com.brn.sort.resources.dto.SortResultDto;
+import io.dropwizard.testing.ConfigOverride;
 import io.dropwizard.testing.ResourceHelpers;
 import io.dropwizard.testing.junit.DropwizardAppRule;
 import org.glassfish.jersey.client.JerseyClientBuilder;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class NumberSorterAcceptanceTest {
 
+
+    private static final String TMP_FILE = createTempFile();
+    private static final String CONFIG_PATH = ResourceHelpers.resourceFilePath("sort-app-it.yaml");
+
     @ClassRule
-    public static final DropwizardAppRule<SortAppConfiguration> RULE =
-            new DropwizardAppRule<>(App.class, ResourceHelpers.resourceFilePath("sort-app-it.yaml"));
+    public static final DropwizardAppRule<SortAppConfiguration> RULE = new DropwizardAppRule<>(
+            App.class, CONFIG_PATH,
+            ConfigOverride.config("database.url", "jdbc:h2:" + TMP_FILE));
+
+    @BeforeClass
+    public static void migrateDb() throws Exception {
+        RULE.getApplication().run("db", "migrate", CONFIG_PATH);
+    }
+
+    private static String createTempFile() {
+        try {
+            return File.createTempFile("test-example", null).getAbsolutePath();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
 
     @Test
-    @Ignore //Enable when DB already exists
     public void shouldSaveSortingResult() {
         Client client = JerseyClientBuilder.newClient();
 
@@ -45,7 +66,6 @@ public class NumberSorterAcceptanceTest {
     }
 
     @Test
-    @Ignore //Enable when DB already exists
     public void shouldReturnErrorCodeWhenBadInput() {
         Client client = JerseyClientBuilder.newClient();
 
@@ -59,9 +79,16 @@ public class NumberSorterAcceptanceTest {
     }
 
     @Test
-    @Ignore //Enable when DB already exists
     public void shouldFetchAllSortingResults() {
         Client client = JerseyClientBuilder.newClient();
+
+        //create an entry
+        client.target(
+                String.format("http://localhost:%d/sortNumbers", RULE.getLocalPort()))
+                .request()
+                .post(Entity.text("15,19,6,2,3"));
+
+
         Response response = client.target(
                 String.format("http://localhost:%d/sortNumbers", RULE.getLocalPort()))
                 .request()
