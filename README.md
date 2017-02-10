@@ -8,7 +8,7 @@ Dropwizard framework, Google guice, hibernate and h2 DB.
 
 To test the sort-app, run the following commands.
 
-* To package the example run the following from the root directory.
+* To package the application, run the following from the root directory.
 
         mvn package
 
