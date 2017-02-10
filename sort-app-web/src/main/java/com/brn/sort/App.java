@@ -1,7 +1,7 @@
 package com.brn.sort;
 
 import com.brn.sort.inject.SortAppModule;
-import com.brn.sort.service.db.entity.SortResult;
+import com.brn.sort.service.entity.SortResult;
 import io.dropwizard.Application;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
@@ -42,8 +42,6 @@ public class App extends Application<SortAppConfiguration> {
                 .enableAutoConfig("com.brn.sort")
                 .searchCommands()
                 .build());
-
-
     }
 
     @Override

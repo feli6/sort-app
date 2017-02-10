@@ -1,4 +1,4 @@
-package com.brn.sort.service.db.entity;
+package com.brn.sort.service.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

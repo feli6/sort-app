@@ -1,8 +1,8 @@
 package com.brn.sort.service;
 
 
-import com.brn.sort.service.db.entity.SortResult;
-import com.brn.sort.service.db.entity.SortResultDao;
+import com.brn.sort.service.entity.SortResult;
+import com.brn.sort.service.dao.SortResultDao;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,7 +20,7 @@ public class SortingServiceTest {
     private final SortingService target = new SortingService(sorter, dao);
 
     @Test
-    public void shouldSortNumbersInAscendingOrder() {
+    public void shouldSortNumbers() {
         when(sorter.sort(any())).thenReturn(new Sorter.SorterResult(new int[]{1,2,3,4,5}, 1, 2));
         when(dao.create(any())).thenReturn(new SortResult("1,2,3", "2,3,4", 1,2));
         SortResult result = target.sortNumbers(new int[]{2, 3, 4, 5, 6});

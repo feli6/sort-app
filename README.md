@@ -28,6 +28,9 @@ To test the sort-app, run the following commands.
 * To see the details of the already sorted input numbers, open http://localhost:8080/sortNumbers
     or 
     curl -X GET http://localhost:8080/sortNumbers
+    
+* Dropwizard provides nice metrics on
+     http://localhost:8081  
 
 # Configuring Application
 You can add or change configurations in sort-app.yaml file in the root directory.
@@ -37,3 +40,4 @@ You can add or change configurations in sort-app.yaml file in the root directory
 *  More test coverage
 *  Pagination support
 *  Validations
+*  Logging

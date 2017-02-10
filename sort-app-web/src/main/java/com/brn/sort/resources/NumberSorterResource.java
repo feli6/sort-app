@@ -2,7 +2,7 @@ package com.brn.sort.resources;
 
 import com.brn.sort.resources.dto.SortResultDto;
 import com.brn.sort.service.SortingService;
-import com.brn.sort.service.db.entity.SortResult;
+import com.brn.sort.service.entity.SortResult;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Strings;
 import io.dropwizard.hibernate.UnitOfWork;
@@ -49,13 +49,18 @@ public class NumberSorterResource {
 
     }
 
-
     private int[] extractNumbersFromCSV(String csvNumbersList) {
         validate(csvNumbersList);
         final String[] numbersStringArray = csvNumbersList.split(",");
         return Arrays.stream(numbersStringArray)
+                .map(String::trim)
+                .filter(this::isNotNullOrEmpty)
                 .mapToInt(Integer::valueOf)
                 .toArray();
+    }
+
+    private boolean isNotNullOrEmpty(String s){
+        return !Strings.isNullOrEmpty(s);
     }
 
     //TODO: More Validation cases need to be implemented
@@ -70,7 +75,7 @@ public class NumberSorterResource {
     @UnitOfWork
     public Response getSortedNumbers() {
         //TODO: Need to enable pagination
-        final List<SortResultDto> results = sortingService.findAllSortNumberResults()
+        final List<SortResultDto> results = sortingService.findAllSortResults()
                 .stream()
                 .map(SortResultDto::from)
                 .collect(Collectors.toList());

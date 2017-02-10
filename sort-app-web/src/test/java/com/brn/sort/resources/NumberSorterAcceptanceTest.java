@@ -47,7 +47,7 @@ public class NumberSorterAcceptanceTest {
 
 
     @Test
-    public void shouldSaveSortingResult() {
+    public void shouldSortValidNumericValues() {
         Client client = JerseyClientBuilder.newClient();
 
         Response response = client.target(
@@ -63,6 +63,25 @@ public class NumberSorterAcceptanceTest {
         assertThat(sortResultDto.getSortingDuration()).isGreaterThan(0);
         assertThat(sortResultDto.getSortResult()).isEqualTo("2,3,6,15,19");
         assertThat(sortResultDto.getInputNumbers()).isEqualTo("15,19,6,2,3");
+    }
+
+    @Test
+    public void shouldProcessInputWithSpaces() {
+        Client client = JerseyClientBuilder.newClient();
+
+        Response response = client.target(
+                String.format("http://localhost:%d/sortNumbers", RULE.getLocalPort()))
+                .request()
+                .post(Entity.text("15, 19 ,6 , , 3,,10"));
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
+        SortResultDto sortResultDto = response.readEntity(SortResultDto.class);
+        assertThat(sortResultDto).isNotNull();
+        assertThat(sortResultDto.getNumberOfPositionChanges()).isNotNull();
+        assertThat(sortResultDto.getSortingDuration()).isGreaterThan(0);
+        assertThat(sortResultDto.getSortResult()).isEqualTo("3,6,10,15,19");
+        assertThat(sortResultDto.getInputNumbers()).isEqualTo("15,19,6,3,10");
     }
 
     @Test

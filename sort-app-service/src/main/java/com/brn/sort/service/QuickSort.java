@@ -1,7 +1,7 @@
 package com.brn.sort.service;
 
 /**
- * Implements quicksort for sorting inout numbers.
+ * Implements quicksort for sorting input numbers.
  */
 public class QuickSort implements Sorter {
 

@@ -1,5 +1,6 @@
-package com.brn.sort.service.db.entity;
+package com.brn.sort.service.dao;
 
+import com.brn.sort.service.entity.SortResult;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
 

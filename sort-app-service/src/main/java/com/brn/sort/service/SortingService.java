@@ -1,8 +1,8 @@
 package com.brn.sort.service;
 
 
-import com.brn.sort.service.db.entity.SortResult;
-import com.brn.sort.service.db.entity.SortResultDao;
+import com.brn.sort.service.entity.SortResult;
+import com.brn.sort.service.dao.SortResultDao;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +24,7 @@ public class SortingService {
         return dao.create(toSortResult(inputNumbers, sorterResult));
     }
 
-    public List<SortResult> findAllSortNumberResults() {
+    public List<SortResult> findAllSortResults() {
         return dao.findAll();
     }
 

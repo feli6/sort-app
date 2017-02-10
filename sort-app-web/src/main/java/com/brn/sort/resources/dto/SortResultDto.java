@@ -1,7 +1,7 @@
 package com.brn.sort.resources.dto;
 
 
-import com.brn.sort.service.db.entity.SortResult;
+import com.brn.sort.service.entity.SortResult;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
