@@ -26,7 +26,12 @@ public class QuickSortTest {
         assertThat(result.getSortingDuration()).isGreaterThan(0);
     }
 
-    //TODO: more tests to follow
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowExceptionWhenBabArg() {
+        QuickSort sorter = new QuickSort();
+        Sorter.SorterResult result = sorter.sort(null);
+    }
 
+    //TODO: more tests to follow
 
 }

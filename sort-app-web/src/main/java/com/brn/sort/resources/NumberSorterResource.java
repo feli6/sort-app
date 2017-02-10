@@ -1,9 +1,10 @@
 package com.brn.sort.resources;
 
-import com.brn.sort.resources.dto.SortingResult;
+import com.brn.sort.resources.dto.SortResultDto;
 import com.brn.sort.service.SortingService;
 import com.brn.sort.service.db.entity.SortResult;
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.base.Strings;
 import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.inject.Inject;
@@ -35,19 +36,33 @@ public class NumberSorterResource {
     @Timed
     @UnitOfWork
     public Response sort(String csvNumbersList) {
-        //TODO: Send error code on exceptions etc.
-        int[] unsortedNumbers = extractNumbersFromCSV(csvNumbersList);
-        SortResult sortResult = sortingService.sortNumbers(unsortedNumbers);
-        SortingResult result = SortingResult.from(sortResult);
-        return Response.ok()
-                .entity(result)
-                .build();
+        try {
+            int[] unsortedNumbers = extractNumbersFromCSV(csvNumbersList);
+            SortResult sortResult = sortingService.sortNumbers(unsortedNumbers);
+            SortResultDto result = SortResultDto.from(sortResult);
+            return Response.ok()
+                    .entity(result)
+                    .build();
+        } catch (Exception e) { //look at using dropwizard exception mappers or catching specific exceptions
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
     }
 
-    //TODO: Validation
+
     private int[] extractNumbersFromCSV(String csvNumbersList) {
-        String[] numbersStringArray = csvNumbersList.split(",");
-        return Arrays.stream(numbersStringArray).mapToInt(Integer::valueOf).toArray();
+        validate(csvNumbersList);
+        final String[] numbersStringArray = csvNumbersList.split(",");
+        return Arrays.stream(numbersStringArray)
+                .mapToInt(Integer::valueOf)
+                .toArray();
+    }
+
+    //TODO: More Validation cases need to be implemented
+    private void validate(String csvNumbersList) {
+        if (Strings.isNullOrEmpty(csvNumbersList)) {
+            throw new IllegalArgumentException("Invalid input");
+        }
     }
 
     @GET
@@ -55,9 +70,9 @@ public class NumberSorterResource {
     @UnitOfWork
     public Response getSortedNumbers() {
         //TODO: Need to enable pagination
-        List<SortingResult> results = sortingService.findAllSortNumberResults()
+        final List<SortResultDto> results = sortingService.findAllSortNumberResults()
                 .stream()
-                .map(SortingResult::from)
+                .map(SortResultDto::from)
                 .collect(Collectors.toList());
         return Response.ok().entity(results).build();
     }
